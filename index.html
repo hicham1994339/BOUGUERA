@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#12304a">
+<title>HAMDAD EDU | التواصل المدرسي</title>
+<style>
+:root{--navy:#12304a;--blue:#1769aa;--gold:#e7b653;--bg:#f3f6fa;--border:#e1e7ef;--text:#243447;--muted:#6b7b8e;--green:#18865b;--red:#c0392b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px;background:var(--blue);color:white}
+button:disabled{opacity:.55;cursor:not-allowed}
+input,select,textarea{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px;background:white}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+h1,h2,h3{margin-top:0}
+h2{font-size:20px}
+.hidden{display:none!important}
+.muted,.small{color:var(--muted)}
+.small{font-size:12px;line-height:1.8}
+#login{max-width:460px;margin:6vh auto;background:white;border-radius:18px;padding:26px;box-shadow:0 8px 35px #12304a12}
+.brand{text-align:center;font-weight:bold;font-size:28px;color:var(--navy);margin-bottom:8px}
+.brand span,.logo span{color:var(--gold)}
+#login form{display:grid;gap:14px;margin-top:24px}
+.secondary{background:#e8eef5;color:var(--navy)}
+.danger{background:var(--red)}
+.success{background:var(--green)}
+.notice{background:#fff5dc;color:#785a18;padding:12px;border-radius:9px;font-size:13px;line-height:1.8}
+#app{display:grid;grid-template-columns:235px 1fr;min-height:100vh}
+aside{background:var(--navy);color:white;padding:20px 14px}
+.logo{font-size:21px;font-weight:bold;margin:8px 8px 28px}
+nav{display:grid;gap:7px}
+nav button{background:transparent;text-align:right;color:#e8eff7}
+nav button.active,nav button:hover{background:#ffffff1b}
+main{padding:24px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.topbar h1{font-size:23px;margin:0}
+.panel{background:white;border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:18px}
+.stat{background:white;border:1px solid var(--border);border-radius:12px;padding:17px}
+.stat strong{display:block;font-size:25px;margin-top:10px;overflow-wrap:anywhere}
+.stat small{color:var(--muted)}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.field.full{grid-column:1/-1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.page{display:none}.page.active{display:block}
+.item{border:1px solid var(--border);padding:14px;border-radius:10px;margin:10px 0;background:#fff}
+.item h3{margin:0 0 8px;font-size:16px}
+.item p{white-space:pre-wrap;line-height:1.8;margin:8px 0}
+.badge{display:inline-block;border-radius:20px;padding:4px 9px;background:#eaf2fb;color:var(--blue);font-size:12px}
+table{border-collapse:collapse;width:100%;min-width:570px}
+th,td{text-align:right;padding:11px;border-bottom:1px solid var(--border);font-size:13px}
+th{background:#f7f9fc}
+.tablewrap{overflow:auto}
+.empty{text-align:center;padding:25px;color:var(--muted)}
+#toast{display:none;position:fixed;bottom:18px;left:18px;background:#183146;color:white;padding:13px 17px;border-radius:9px;z-index:99;max-width:90%}
+#toast.show{display:block}
+hr{border:0;border-top:1px solid #ffffff2b;margin:18px 0}
+@media(max-width:800px){#app{grid-template-columns:1fr}aside{padding:12px}.logo{margin:8px 5px 14px}nav{display:flex;overflow:auto}nav button{white-space:nowrap}main{padding:13px}.stats{grid-template-columns:1fr 1fr}.topbar h1{font-size:20px}}
+@media(max-width:480px){.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="brand">HAMDAD <span>EDU</span></div>
+  <p class="muted" style="text-align:center">منصة التواصل بين الثانوية والأولياء</p>
+  <div class="notice">سجّل الدخول بحسابك. لا تشارك كلمة المرور مع الآخرين.</div>
+  <form id="loginForm">
+    <div><label for="email">البريد الإلكتروني</label><input id="email" type="email" required autocomplete="username"></div>
+    <div><label for="password">كلمة المرور</label><input id="password" type="password" required autocomplete="current-password"></div>
+    <button id="loginBtn" type="submit">تسجيل الدخول</button>
+    <p id="loginMsg" class="small"></p>
+  </form>
+</section>
+
+<div id="app" class="hidden">
+  <aside>
+    <div class="logo">HAMDAD <span>EDU</span></div>
+    <div id="userInfo" class="small" style="color:#dbe7f3;margin:0 8px 15px"></div>
+    <nav id="nav">
+      <button class="active" data-page="home">▦ لوحة التحكم</button>
+      <button data-page="announcements">▤ إعلانات الثانوية</button>
+      <button data-page="messages">✉ الرسائل</button>
+      <button data-page="attendance">◷ الغياب والتأخر</button>
+      <button data-page="students">♙ التلاميذ المرتبطون</button>
+      <button data-page="account">⚙ حسابي</button>
+    </nav>
+    <hr>
+    <button id="logout" class="secondary" style="width:100%">تسجيل الخروج</button>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <h1 id="pageTitle">لوحة التحكم</h1>
+      <span id="connection" class="badge">جارٍ الاتصال...</span>
+    </div>
+
+    <section id="page-home" class="page active">
+      <div class="panel">
+        <h2 id="welcome">مرحبًا بك في HAMDAD EDU</h2>
+        <p>منصة رقمية لتسهيل التواصل التربوي بين إدارة الثانوية والأولياء والأساتذة.</p>
+        <p class="small">تعتمد المعلومات المعروضة على صلاحيات الحساب والبيانات التي أُدخلت في قاعدة البيانات.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><small>الإعلانات المعروضة</small><strong id="statAnnouncements">0</strong></div>
+        <div class="stat"><small>الرسائل الواردة</small><strong id="statMessages">0</strong></div>
+        <div class="stat"><small>إشعارات الغياب</small><strong id="statAttendance">0</strong></div>
+      </div>
+      <div class="panel"><h2>آخر الإعلانات</h2><div id="homeAnnouncements"></div></div>
+    </section>
+
+    <section id="page-announcements" class="page">
+      <div id="announcementFormPanel" class="panel hidden">
+        <h2>نشر إعلان جديد</h2>
+        <form id="announcementForm">
+          <div class="formgrid">
+            <div class="field full"><label>عنوان الإعلان *</label><input id="announcementTitle" maxlength="150" required></div>
+            <div class="field full"><label>محتوى الإعلان *</label><textarea id="announcementBody" rows="5" maxlength="10000" required></textarea></div>
+          </div>
+          <div class="actions"><button type="submit">نشر الإعلان</button></div>
+        </form>
+      </div>
+      <div class="panel"><h2>إعلانات الثانوية</h2><div id="announcementsList"></div></div>
+    </section>
+
+    <section id="page-messages" class="page">
+      <div class="panel">
+        <h2>إرسال رسالة إلى الإدارة</h2>
+        <form id="messageForm">
+          <div class="formgrid">
+            <div class="field full"><label>عنوان الرسالة *</label><input id="messageTitle" maxlength="150" required></div>
+            <div class="field full"><label>محتوى الرسالة *</label><textarea id="messageBody" rows="5" maxlength="5000" required></textarea></div>
+          </div>
+          <div class="actions"><button type="submit">إرسال الرسالة</button></div>
+        </form>
+      </div>
+      <div class="panel"><h2>الرسائل</h2><div id="messagesList"></div></div>
+    </section>
+
+    <section id="page-attendance" class="page">
+      <div id="attendanceFormPanel" class="panel hidden">
+        <h2>تسجيل غياب أو تأخر</h2>
+        <form id="attendanceForm">
+          <div class="formgrid">
+            <div class="field"><label>معرّف التلميذ *</label><input id="attendanceStudent" required placeholder="المعرّف المسجّل للتلميذ"></div>
+            <div class="field"><label>نوع الحالة *</label><select id="attendanceType"><option value="غياب">غياب</option><option value="تأخر">تأخر</option></select></div>
+            <div class="field"><label>التاريخ *</label><input id="attendanceDate" type="date" required></div>
+            <div class="field full"><label>ملاحظة</label><textarea id="attendanceNote" rows="3" maxlength="2000"></textarea></div>
+          </div>
+          <div class="actions"><button type="submit">حفظ الحالة</button></div>
+        </form>
+      </div>
+      <div class="panel"><h2>سجل الغياب والتأخر</h2><div id="attendanceList"></div></div>
+    </section>
+
+    <section id="page-students" class="page">
+      <div class="panel">
+        <h2>التلاميذ المرتبطون بحسابي</h2>
+        <p class="small">تُضاف علاقة الولي بالتلميذ من طرف الإدارة المخوّلة. لا تسمح هذه الصفحة بربط الحسابات ذاتيًا.</p>
+        <div id="studentsList"></div>
+      </div>
+    </section>
+
+    <section id="page-account" class="page">
+      <div class="panel">
+        <h2>معلومات الحساب</h2>
+        <p>البريد الإلكتروني: <strong id="accountEmail"></strong></p>
+        <p>الدور: <strong id="accountRole"></strong></p>
+        <p>معرّف الحساب: <code id="accountUid" style="overflow-wrap:anywhere"></code></p>
+        <hr>
+        <p class="small">لتغيير الدور أو ربط تلميذ بحساب ولي، يجب استخدام إجراء إداري موثوق ومؤمّن، وليس تعديل بيانات الحساب من المتصفح.</p>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="toast" role="status"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+ getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+ getFirestore,collection,doc,getDoc,getDocs,addDoc,
+ query,where,orderBy,limit,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/*
+  إعداد Firebase:
+  1- أنشئ مشروع Firebase وتطبيق Web.
+  2- استبدل القيم أدناه بإعدادات مشروعك الحقيقية.
+  3- فعّل Email/Password في Authentication.
+  4- أنشئ Firestore Database وأضف قواعد الحماية المناسبة.
+*/
+const firebaseConfig = {
+ apiKey: "PASTE_YOUR_API_KEY",
+ authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+ projectId: "YOUR_PROJECT_ID",
+ storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+ messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+ appId: "YOUR_APP_ID"
+};
+
+const $ = id => document.getElementById(id);
+let auth=null, db=null, currentUser=null, profile=null;
+let announcements=[], messages=[], attendance=[], students=[];
+const roleNames={admin:"الإدارة",teacher:"الأستاذ",parent:"ولي التلميذ"};
+
+function toast(text){
+ const el=$("toast");el.textContent=text;el.classList.add("show");
+ clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove("show"),3500);
+}
+function safe(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function showError(code){
+ const map={
+ "auth/invalid-credential":"البريد أو كلمة المرور غير صحيحين.",
+ "auth/user-not-found":"الحساب غير موجود.",
+ "auth/too-many-requests":"محاولات كثيرة؛ حاول لاحقًا.",
+ "auth/operation-not-allowed":"فعّل تسجيل الدخول بالبريد وكلمة المرور في Firebase.",
+ "permission-denied":"رفضت قواعد قاعدة البيانات العملية. راجع صلاحيات Firestore.",
+ "unavailable":"تعذر الاتصال بالخدمة. تحقق من الإنترنت."
+ };
+ return map[code]||("تعذرت العملية: "+(code||"خطأ غير معروف"));
+}
+function userPath(name){return collection(db,"schools",profile.schoolId,name)}
+function setConnection(text){$("connection").textContent=text}
+
+async function getProfile(user){
+ const snap=await getDoc(doc(db,"users",user.uid));
+ if(!snap.exists()) throw new Error("PROFILE_MISSING");
+ const p=snap.data();
+ if(!["admin","teacher","parent"].includes(p.role)||!p.schoolId) throw new Error("PROFILE_INVALID");
+ return p;
+}
+async function getCollectionSafe(name,extra=[]){
+ const constraints=[...extra];
+ try{
+  const snap=await getDocs(query(userPath(name),...constraints));
+  return snap.docs.map(d=>({id:d.id,...d.data()}));
+ }catch(e){console.error(name,e);throw e}
+}
+async function loadAll(){
+ setConnection("جارٍ تحميل البيانات...");
+ try{
+  // لا تُحمّل رسائل أو غيابات كل المدرسة لجميع المستخدمين.
+  announcements=await getCollectionSafe("announcements",[orderBy("createdAt","desc"),limit(50)]);
+  if(profile.role==="admin"){
+   messages=await getCollectionSafe("messages",[orderBy("createdAt","desc"),limit(100)]);
+   attendance=await getCollectionSafe("attendance",[orderBy("createdAt","desc"),limit(100)]);
+  }else if(profile.role==="parent"){
+   messages=await getCollectionSafe("messages",[where("parentUid","==",currentUser.uid),orderBy("createdAt","desc"),limit(100)]);
+   attendance=await getCollectionSafe("attendance",[where("parentUid","==",currentUser.uid),orderBy("createdAt","desc"),limit(100)]);
+  }else{
+   messages=await getCollectionSafe("messages",[where("senderUid","==",currentUser.uid),orderBy("createdAt","desc"),limit(100)]);
+   attendance=[];
+  }
+  if(profile.role==="parent"){
+   students=await getCollectionSafe("students",[where("parentUid","==",currentUser.uid)]);
+  }else if(profile.role==="admin"){
+   students=await getCollectionSafe("students",[limit(200)]);
+  }else{students=[]}
+  renderAll();setConnection("متصل");
+ }catch(e){
+  console.error(e);setConnection("خطأ في تحميل البيانات");
+  toast(showError(e.code||e.message));
+ }
+}
+function showPage(page){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ $("page-"+page).classList.add("active");
+ document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ const titles={home:"لوحة التحكم",announcements:"إعلانات الثانوية",messages:"الرسائل",attendance:"الغياب والتأخر",students:"التلاميذ المرتبطون",account:"حسابي"};
+ $("pageTitle").textContent=titles[page]||"HAMDAD EDU";
+}
+function itemCard(title,body,meta){
+ return `<article class="item"><h3>${safe(title)}</h3><p>${safe(body)}</p><div class="small">${safe(meta||"")}</div></article>`;
+}
+function renderAll(){
+ const canPublish=["admin","teacher"].includes(profile.role);
+ $("announcementFormPanel").classList.toggle("hidden",!canPublish);
+ $("attendanceFormPanel").classList.toggle("hidden",profile.role!=="admin"&&profile.role!=="teacher");
+ $("userInfo").textContent=(profile.displayName||currentUser.email)+" — "+roleNames[profile.role];
+ $("welcome").textContent="مرحبًا "+(profile.displayName||"بك")+" في HAMDAD EDU";
+ $("accountEmail").textContent=currentUser.email||"";
+ $("accountRole").textContent=roleNames[profile.role]||profile.role;
+ $("accountUid").textContent=currentUser.uid;
+ $("statAnnouncements").textContent=announcements.length;
+ $("statMessages").textContent=messages.length;
+ $("statAttendance").textContent=attendance.length;
+ $("announcementsList").innerHTML=announcements.length?announcements.map(a=>itemCard(a.title,a.body,(a.authorName||"")+(a.createdAt?.toDate?" • "+a.createdAt.toDate().toLocaleString("ar"):""))).join(""):'<div class="empty">لا توجد إعلانات منشورة.</div>';
+ $("homeAnnouncements").innerHTML=announcements.slice(0,3).map(a=>itemCard(a.title,a.body,a.authorName||"")).join("")||'<div class="empty">لا توجد إعلانات بعد.</div>';
+ $("messagesList").innerHTML=messages.length?messages.map(m=>itemCard(m.title,m.body,"من: "+(m.senderName||"مستخدم")+(m.createdAt?.toDate?" • "+m.createdAt.toDate().toLocaleString("ar"):""))).join(""):'<div class="empty">لا توجد رسائل.</div>';
+ $("attendanceList").innerHTML=attendance.length?`<div class="tablewrap"><table><thead><tr><th>التلميذ</th><th>الحالة</th><th>التاريخ</th><th>ملاحظة</th></tr></thead><tbody>${attendance.map(a=>`<tr><td>${safe(a.studentName||a.studentId)}</td><td>${safe(a.type)}</td><td>${safe(a.date)}</td><td>${safe(a.note||"-")}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">لا توجد حالات معروضة.</div>';
+ $("studentsList").innerHTML=students.length?`<div class="tablewrap"><table><thead><tr><th>اسم التلميذ</th><th>القسم</th><th>المعرّف</th></tr></thead><tbody>${students.map(s=>`<tr><td>${safe(s.name)}</td><td>${safe(s.className||"-")}</td><td>${safe(s.id)}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">لا توجد سجلات مرتبطة بهذا الحساب.</div>';
+ $("messageForm").classList.toggle("hidden",false);
+}
+async function publishAnnouncement(e){
+ e.preventDefault();
+ if(!["admin","teacher"].includes(profile.role)){toast("ليس لديك صلاحية نشر إعلان.");return}
+ const title=$("announcementTitle").value.trim(),body=$("announcementBody").value.trim();
+ if(!title||!body)return;
+ try{
+  await addDoc(userPath("announcements"),{title,body,authorUid:currentUser.uid,authorName:profile.displayName||currentUser.email,createdAt:serverTimestamp()});
+  $("announcementForm").reset();toast("تم نشر الإعلان.");
+  await loadAll();
+ }catch(err){console.error(err);toast(showError(err.code))}
+}
+async function sendMessage(e){
+ e.preventDefault();
+ const title=$("messageTitle").value.trim(),body=$("messageBody").value.trim();
+ if(!title||!body)return;
+ try{
+  await addDoc(userPath("messages"),{
+   title,body,senderUid:currentUser.uid,senderName:profile.displayName||currentUser.email,
+   parentUid:profile.role==="parent"?currentUser.uid:"",
+   schoolId:profile.schoolId,createdAt:serverTimestamp()
+  });
+  $("messageForm").reset();toast("تم إرسال الرسالة.");
+  await loadAll();
+ }catch(err){console.error(err);toast(showError(err.code))}
+}
+async function reportAttendance(e){
+ e.preventDefault();
+ if(!["admin","teacher"].includes(profile.role)){toast("ليس لديك صلاحية تسجيل الغياب.");return}
+ const studentId=$("attendanceStudent").value.trim();
+ const date=$("attendanceDate").value;
+ const type=$("attendanceType").value;
+ const note=$("attendanceNote").value.trim();
+ if(!studentId||!date)return;
+ try{
+  // يجب أن يكون التلميذ مسجلاً في نفس الثانوية.
+  const studentSnap=await getDoc(doc(db,"schools",profile.schoolId,"students",studentId));
+  if(!studentSnap.exists()){toast("لم يُعثر على هذا التلميذ في سجلات الثانوية.");return}
+  const st=studentSnap.data();
+  await addDoc(userPath("attendance"),{
+   studentId,studentName:st.name||"",parentUid:st.parentUid||"",
+   type,date,note,authorUid:currentUser.uid,createdAt:serverTimestamp()
+  });
+  $("attendanceForm").reset();toast("تم تسجيل الحالة.");
+  await loadAll();
+ }catch(err){console.error(err);toast(showError(err.code))}
+}
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!auth){$("loginMsg").textContent="يجب إعداد Firebase في الكود أولًا.";return}
+ $("loginBtn").disabled=true;$("loginMsg").textContent="جارٍ تسجيل الدخول...";
+ try{
+  await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);
+ }catch(err){console.error(err);$("loginMsg").textContent=showError(err.code)}
+ finally{$("loginBtn").disabled=false}
+});
+$("logout").addEventListener("click",async()=>{
+ if(confirm("هل تريد تسجيل الخروج؟"))await signOut(auth);
+});
+$("nav").addEventListener("click",e=>{
+ const b=e.target.closest("[data-page]");if(b)showPage(b.dataset.page);
+});
+$("announcementForm").addEventListener("submit",publishAnnouncement);
+$("messageForm").addEventListener("submit",sendMessage);
+$("attendanceForm").addEventListener("submit",reportAttendance);
+
+try{
+ if(firebaseConfig.apiKey.startsWith("PASTE_")||firebaseConfig.projectId==="YOUR_PROJECT_ID"){
+  $("loginMsg").textContent="أدخل إعدادات Firebase الحقيقية في الكود قبل تسجيل الدخول.";
+  setConnection("Firebase غير مهيأ");
+ }else{
+  const app=initializeApp(firebaseConfig);
+  auth=getAuth(app);db=getFirestore(app);
+  onAuthStateChanged(auth,async u=>{
+   currentUser=u;
+   if(!u){
+    profile=null;$("login").classList.remove("hidden");$("app").classList.add("hidden");
+    setConnection("تم تسجيل الخروج");return;
+   }
+   try{
+    profile=await getProfile(u);
+    $("login").classList.add("hidden");$("app").classList.remove("hidden");
+    await loadAll();
+   }catch(err){
+    console.error(err);
+    setConnection("الحساب غير مهيأ");
+    $("loginMsg").textContent=err.message==="PROFILE_MISSING"?
+     "الحساب موجود، لكن الإدارة لم تنشئ ملفه وصلاحياته بعد.":
+     "تعذر التحقق من صلاحيات الحساب. تواصل مع مسؤول النظام.";
+    await signOut(auth);
+   }
+  });
+ }
+}catch(err){console.error(err);$("loginMsg").textContent="خطأ في إعداد Firebase. راجع بيانات المشروع."}
+</script>
+</body>
+</html>
